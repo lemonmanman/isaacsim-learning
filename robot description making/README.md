@@ -8,6 +8,8 @@ Take ARX-X7S as an example:
 Structure:
 
 Graphs:
-![joint graph](../images/graph1.png)
-![graph2](../images/graph2.png)
-![graph3](../images/graph3.png)
+- Ros_jointStates
+![joint graph](../.images/graph1.png)
+- holonomic controller
+![graph2](../.images/graph2.png)
+![graph3](../.images/graph3.png)
