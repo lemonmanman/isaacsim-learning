@@ -2,6 +2,18 @@
 
 This file includes my personal attempts to make a robot description package based on a single urdf package.
 
+You can find relevant official tutorial in [isaac sim robot set-up tutorial](https://docs.isaacsim.omniverse.nvidia.com/6.0.0/robot_setup_tutorials/tutorial_import_assemble_manipulator.html).
+
+## XACRO and URDF
+We usually use .xacro files to manage different parts of the robot, and use the following command to automatically generate a urdf file:
+```bash
+xacro your_xacro_file_name.xacro > your_urdf_file_name.urdf
+```
+
+## Blender Rendering
+- Export as .obj
+> Note: with **Y as forward axis** and **Z as up axis**
+
 ## Action Graph
 Take ARX-X7S as an example:
 

@@ -26,5 +26,5 @@ ros2 launch arms_teleop joystick_teleop.launch.py
   - If: urdf --> import
   - If: usd --> open(directly)(double click is okay)
   - Choose YES when encountering messages below:
-  ![pop up when opening the usd](../images/message_when_opening_usd.png)
+  ![pop up when opening the usd](../.images/message_when_opening_usd.png)
   > REASON: Some of the controlling scripts are personally written, so the scripts are necessary when the ros2 control is in need.

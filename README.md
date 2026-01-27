@@ -2,10 +2,12 @@
 
 This package contains my personal records of isaac sim using, which serves as a quick enter and assists me in collecting bugs that I've ever met so that I can turn to them when I encounter them for the second time.
 
-## isaac sim version
-Isaac Sim Full 6.0.0
-You can download it from [Isaacsim](https://github.com/isaac-sim/IsaacSim/tree/develop?tab=readme-ov-file)
+My ubuntu version is 24.04.
 
-> Note: Make sure whether you are git cloning the main branch or the develop branch, while the former results in Isaac Sim 5.1.0 and the ladder results in Isaac Sim 6.0.0.
+You can find:
+- [github using reminds](/github%20using%20reminds)
+- [isaac-sim installation](/isaac-sim%20installation)
+- [isaac-sim starting](isaac-sim%20starting)
+- [robot description making](robot%20description%20making)
 
-You can use **git checkout** to switch to the **develop** branch in order to download the latest version.
+The official tutorial can be found in [isaacsim official](https://docs.isaacsim.omniverse.nvidia.com/6.0.0/index.html).
