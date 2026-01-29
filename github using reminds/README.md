@@ -24,3 +24,5 @@ Possible solution: using the SSH way to enter:
 ```bash
 git remote set-url origin git@github.com:your_user_name/your_repository_name.git
 ```
+
+The fatal may be encountered also in pushing a branch and so forth, while using the SSH way is usually effective.

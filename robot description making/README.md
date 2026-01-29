@@ -4,15 +4,41 @@ This file includes my personal attempts to make a robot description package base
 
 You can find relevant official tutorial in [isaac sim robot set-up tutorial](https://docs.isaacsim.omniverse.nvidia.com/6.0.0/robot_setup_tutorials/tutorial_import_assemble_manipulator.html).
 
+## General Steps
+1. Use the xacro file to modularize components of the robot.
+2. Turn to the README file and test the visualization.
+    > Note: Errors may be encountered during this stage, mostly because of the conflict between **macro definition and 
+data transmission**. You can use LLM to help fix it.
+
+
 ## XACRO and URDF
-We usually use .xacro files to manage different parts of the robot, and use the following command to automatically generate a urdf file:
+1. We usually use .xacro files to manage different parts of the robot, and use the following command to automatically generate a urdf file:
 ```bash
 xacro your_xacro_file_name.xacro > your_urdf_file_name.urdf
 ```
+2. The logic of an xacro file compilation:
+```bash
+xacro
+├── components
+│   ├── arm.xacro
+│   ├── base.xacro
+│   ├── gripper.xacro
+│   └── wheel.xacro
+├── component.xacro
+├── robot.xacro
+```
+- The file "robot.xacro" serve as a general operator, where the following
+xacro files in the component folder are cited and serially compiled.
+- The exact files in the component folder depends on situation, which means
+that it is acceptable that some robots don't own grippers or wheels and so forth.
+
 
 ## Blender Rendering
 - Export as .obj
 > Note: with **Y as forward axis** and **Z as up axis**
+
+- Export as .glb
+> Note: /Transform/+Y up should be disabled
 
 ## Action Graph
 Take ARX-X7S as an example:
