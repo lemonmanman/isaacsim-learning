@@ -24,7 +24,8 @@ data transmission**. You can use LLM to help fix it.
 ## XACRO and URDF
 1. We usually use .xacro files to manage different parts of the robot, and use the following command to automatically generate a urdf file:
    ```bash
-   xacro your_xacro_file_name.xacro > your_urdf_file_name.urdf
+   source ~/ros2_ws/install/setup.bash
+   xacro your_xacro_file_name.xacro -o your_urdf_file_name.urdf
    ```
 2. The logic of an xacro file compilation:
    ```bash
