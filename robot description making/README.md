@@ -9,24 +9,34 @@ You can find relevant official tutorial in [isaac sim robot set-up tutorial](htt
 2. Turn to the README file and test the visualization.
     > Note: Errors may be encountered during this stage, mostly because of the conflict between **macro definition and 
 data transmission**. You can use LLM to help fix it.
-
+3. Write the files in /config:
+   ```bash
+   config
+   ├── ocs2
+   │   ├── fixed_base.info
+   │   └── task.info
+   └── ros2_control
+       └── ros2_controllers.yaml
+   ```
+   Play the ocs control demo to make sure it works.
+4. Import the robot into isaac sim, assign the nodes and try riviz control.
 
 ## XACRO and URDF
 1. We usually use .xacro files to manage different parts of the robot, and use the following command to automatically generate a urdf file:
-```bash
-xacro your_xacro_file_name.xacro > your_urdf_file_name.urdf
-```
+   ```bash
+   xacro your_xacro_file_name.xacro > your_urdf_file_name.urdf
+   ```
 2. The logic of an xacro file compilation:
-```bash
-xacro
-├── components
-│   ├── arm.xacro
-│   ├── base.xacro
-│   ├── gripper.xacro
-│   └── wheel.xacro
-├── component.xacro
-├── robot.xacro
-```
+   ```bash
+   xacro
+   ├── components
+   │   ├── arm.xacro
+   │   ├── base.xacro
+   │   ├── gripper.xacro
+   │   └── wheel.xacro
+   ├── component.xacro
+   ├── robot.xacro
+   ```
 - The file "robot.xacro" serve as a general operator, where the following
 xacro files in the component folder are cited and serially compiled.
 - The exact files in the component folder depends on situation, which means
@@ -35,10 +45,10 @@ that it is acceptable that some robots don't own grippers or wheels and so forth
 
 ## Blender Rendering
 - Export as .obj
-> Note: with **Y as forward axis** and **Z as up axis**
+   > Note: with **Y as forward axis** and **Z as up axis**
 
 - Export as .glb
-> Note: /Transform/+Y up should be disabled
+   > Note: /Transform/+Y up should be disabled
 
 ## Action Graph
 Take ARX-X7S as an example:
