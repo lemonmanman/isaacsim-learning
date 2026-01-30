@@ -7,8 +7,8 @@ You can find relevant official tutorial in [isaac sim robot set-up tutorial](htt
 ## General Steps
 1. Use the xacro file to modularize components of the robot.
 2. Turn to the README file and test the visualization.
-    > Note: Errors may be encountered during this stage, mostly because of the conflict between **macro definition and 
-data transmission**. You can use LLM to help fix it.
+    >    Note: Errors may be encountered during this stage, mostly because of the conflict between **macro definition and 
+   data transmission**. You can use LLM to help fix it.
 3. Write the files in /config:
    ```bash
    config
@@ -19,6 +19,14 @@ data transmission**. You can use LLM to help fix it.
        └── ros2_controllers.yaml
    ```
    Play the ocs control demo to make sure it works.
+
+   Possible ERROR: 视野里只有一个baselink且是白模+末端执行器控制体。终端报错belike:
+    ```bash
+    [ERROR] [mobile_manipulator_mpc_node-3]: process has died [pid 26023, exit code -6, cmd '/home/shimanliang/ros2_ws/install/ocs2_mobile_manipulator_ros/lib/ocs2_mobile_manipulator_ros/mobile_manipulator_mpc_node --ros-args -r __node:=mobile_manipulator_mpc --params-file /tmp/launch_params_9stbutru --params-file /tmp/launch_params_pee3x8ze --params-file /tmp/launch_params_79vuvgqn'].
+    ```
+   Possible reason: task.info里各关节的顺序和robot.xacro里对应不上
+            > Note: 我遇到的原因：机械臂部分复用的是已有的机械臂包，但是机械臂的末端执行器名称没和robot.xacro里的引用对上（也就是命名不一样），改成一样的就解决了。
+
 4. Import the robot into isaac sim, assign the nodes and try riviz control.
 
 ## XACRO and URDF
