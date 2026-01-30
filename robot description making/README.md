@@ -35,6 +35,16 @@ You can find relevant official tutorial in [isaac sim robot set-up tutorial](htt
    source ~/ros2_ws/install/setup.bash
    xacro your_xacro_file_name.xacro -o your_urdf_file_name.urdf
    ```
+    由于 wheel.xacro 里面定义的是一个 宏 (macro)，它不是一个完整的机器人描述文件，因此无法直接通过 xacro wheel.xacro 命令生成 URDF。
+
+    为了单独生成这三个轮子的 URDF 进行测试或验证，需要创建一个临时的“测试桩”文件（wrapper）来调用这个宏。
+    
+    调用语句为：
+    ```bash
+    xacro test_wheel_gen.xacro wheel_name:=wheel_1 rpy:="0 0 0" robot_name:=wheel1 > wheel1.urdf
+    xacro test_wheel_gen.xacro wheel_name:=wheel_2 rpy:="0 0 0" robot_name:=wheel2 > wheel2.urdf
+    xacro test_wheel_gen.xacro wheel_name:=wheel_3 rpy:="0 0 3.1415926" robot_name:=wheel3 > wheel3.urdf #反转方向
+    ```
 2. The logic of an xacro file compilation:
    ```bash
    xacro

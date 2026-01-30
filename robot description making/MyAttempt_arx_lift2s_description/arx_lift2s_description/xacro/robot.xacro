@@ -1,0 +1,34 @@
+<robot name="arx_lift2s" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:arg name="type" default="x5"/>
+    <xacro:arg name="enable_wheel_joints" default="false"/>
+
+    <xacro:include filename="$(find arx_lift2s_description)/xacro/components/base.xacro"/>
+
+    <xacro:Base enable_wheel_joints="$(arg enable_wheel_joints)"/>
+
+    <xacro:if value="${'$(arg type)' == 'x5'}">
+        <xacro:include filename="$(find arx5_description)/xacro/X5.xacro"/>
+        <xacro:X5 name="left"/>
+        <xacro:X5 name="right"/>
+    </xacro:if>
+
+    <xacro:if value="${'$(arg type)' == 'r5'}">
+        <xacro:include filename="$(find arx5_description)/xacro/R5.xacro"/>
+        <xacro:R5 name="left"/>
+        <xacro:R5 name="right"/>
+    </xacro:if>
+
+    <joint name="arm_left_fixed" type="fixed">
+        <parent link="lift_link"/>
+        <child link="left_base_link"/>
+        <origin xyz="0.059949 0.25 -0.036" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="arm_right_fixed" type="fixed">
+        <parent link="lift_link"/>
+        <child link="right_base_link"/>
+        <origin xyz="0.059949 -0.25 -0.036" rpy="0 0 0"/>
+    </joint>
+
+</robot>

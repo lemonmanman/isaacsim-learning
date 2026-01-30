@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- ARX LIFT 2S 手臂关节接口宏定义 -->
+    <xacro:macro name="arx_lift2s_arm_interfaces" params="name base_num">
+        <xacro:property name="prefix" value="${name}_"/>
+        <xacro:property name="num" value="${base_num}"/>
+
+        <!-- 手臂关节接口定义 -->
+        <!-- 注意：关节编号基于base_num参数（1为左臂，2为右臂） -->
+        <joint name="${prefix}joint${num}1">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+
+        <joint name="${prefix}joint${num}2">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+
+        <joint name="${prefix}joint${num}3">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+
+        <joint name="${prefix}joint${num}4">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+
+        <joint name="${prefix}joint${num}5">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+
+        <joint name="${prefix}joint${num}6">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+
+        <!-- 夹爪关节接口 -->
+        <joint name="${prefix}gripper_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+
+
+    </xacro:macro>
+
+    <!-- 可选：为左右臂分别定义的便捷宏 -->
+    <xacro:macro name="left_arm_interfaces">
+        <xacro:arx_lift2s_arm_interfaces name="left" base_num="1"/>
+    </xacro:macro>
+
+    <xacro:macro name="right_arm_interfaces">
+        <xacro:arx_lift2s_arm_interfaces name="right" base_num="2"/>
+    </xacro:macro>
+
+</robot>
