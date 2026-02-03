@@ -35,6 +35,8 @@ You can find relevant official tutorial in [isaac sim robot set-up tutorial](htt
    source ~/ros2_ws/install/setup.bash
    xacro your_xacro_file_name.xacro -o your_urdf_file_name.urdf
    ```
+    >Note: 可能遇到的问题：file not found。有可能是修改了xacro文档内容，所以这个时候需要先重新编译。
+    
     由于 wheel.xacro 里面定义的是一个 宏 (macro)，它不是一个完整的机器人描述文件，因此无法直接通过 xacro wheel.xacro 命令生成 URDF。
 
     为了单独生成这三个轮子的 URDF 进行测试或验证，需要创建一个临时的“测试桩”文件（wrapper）来调用这个宏。
@@ -68,6 +70,11 @@ that it is acceptable that some robots don't own grippers or wheels and so forth
 
 - Export as .glb
    > Note: /Transform/+Y up should be disabled
+
+## Robot Assembler Using
+> General Steps: 
+> 1. 启动RVIZ
+> 2. 在isaac中打开import from ROS2 urdf node 
 
 ## Action Graph
 Take ARX-X7S as an example:

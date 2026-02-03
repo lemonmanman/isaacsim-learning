@@ -29,6 +29,18 @@ ros2 launch arms_teleop joystick_teleop.launch.py
   ![pop up when opening the usd](../.images/message_when_opening_usd.png)
   > REASON: Some of the controlling scripts are personally written, so the scripts are necessary when the ros2 control is in need.
 
+## 5.Docker: Opening Isaac Sim 5.1
+In case the ros2 bridge failed:
+```bash
+cd ~/distrobox/ubuntu22/isaacsim/_build/linux-x86_64/release
+
+# 强制设置中间件为 FastDDS（Humble 默认使用这个，如果不指定，Bridge 可能启动失败）
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+# 尝试启动
+./isaac-sim.sh
+```
+
 ## Possible Errors
 1. Once I encountered errors below, which follows with a quick shutdown 
 when I attempt to open isaac sim:
