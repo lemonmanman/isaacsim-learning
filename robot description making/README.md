@@ -127,6 +127,16 @@ that it is acceptable that some robots don't own grippers or wheels and so forth
 
 总结： 这不是你的技术失误，而是 ROS 2 自动发现机制（DDS）在复杂开发环境下的典型副作用。你现在的解决方法（修改 DOMAIN_ID）正是处理这种冲突的最标准、最有效的专业手段。
 ```
+>Note： 所以，import from ros2 urdf node的时候，应该严格按照以下步骤：
+>  1. 在即将开启可视化节点的窗口设置自己的DOMAIN ID
+>     ```bash
+>     export ROS_DOMAIN_ID=180 #随便设的，防止和别人撞
+>     ```
+>  2. 在同一个终端（重要非常重要）启动可视化节点
+>  3. 在即将开启isaacsim的终端设置同样的DOMAIN ID
+>  4. 启动isaacsim
+>  5. 按步骤设置节点导入 然后import
+
 
 ## Blender Rendering
 - Export as .obj
