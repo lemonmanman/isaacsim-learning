@@ -174,7 +174,8 @@ Graphs:
 ![graph2](../.images/graph2.png)
 ![graph3](../.images/graph3.png)
 
-## Error: no match articulations
+## Errors
+### error: no match articulations
 ```bash
 [Error] [omni.physx.tensors.plugin] Pattern '/World/your_robot_name' did not match any rigid bodies
 [Error] [omni.physx.tensors.plugin] Provided pattern list did not match any articulations
@@ -257,3 +258,10 @@ if robot_prim:
 else:
     print("找不到机器人。")
 ```
+
+### error: isaacsim里机器人抽搐
+前提：点击仿真后，终端无报错
+
+抽搐原因：机器人内部碰撞
+
+解决方法：找到articulation root，取消勾选self collisions enabled
