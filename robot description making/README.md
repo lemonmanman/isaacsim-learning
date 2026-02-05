@@ -63,7 +63,10 @@ xacro files in the component folder are cited and serially compiled.
 - The exact files in the component folder depends on situation, which means
 that it is acceptable that some robots don't own grippers or wheels and so forth.
 
-## Mind the DOMAIN ID
+## Robot Assembler Using
+- Use isaac sim 5.0 to assemble parts.
+- Use isaac sim 6.0 to run the control.
+### Mind the DOMAIN ID
 事情发生的背景是，之前我一直在宿主机本地运行这些仿真都是正常的，但是我现在为了在isaacsim里使用robot assembler进行机器人部件的组装，所以我使用容器ubuntu22安装了isaacsim5.0进行操作（原本宿主机上我使用的是isaacsim6.0），然后今天安装5.0成功后，我使用import from ros2 urdf node导入了机器人的base部分进isaac，结果我想继续导入lift部分的时候，我发现所有RVIZ都失效了开始报错，直到我在同一个终端修改了我的DOMAINID之后才恢复正常。
 
 根源在于：Isaac Sim 的 URDF 导入插件本质上是一个活跃的 ROS 2 节点，它与你的宿主机 Launch 脚本在同一个“频道”内发生了严重的资源抢占。
@@ -127,6 +130,10 @@ that it is acceptable that some robots don't own grippers or wheels and so forth
 
 总结： 这不是你的技术失误，而是 ROS 2 自动发现机制（DDS）在复杂开发环境下的典型副作用。你现在的解决方法（修改 DOMAIN_ID）正是处理这种冲突的最标准、最有效的专业手段。
 ```
+所以一定要手动设置DOMAIN ID！！！
+
+后面遇到很多机器人在RVIZ里抽搐或闪退的问题大抵都和DOMAIN ID冲突有关
+
 >Note： 所以，import from ros2 urdf node的时候，应该严格按照以下步骤：
 >  1. 在即将开启可视化节点的窗口设置自己的DOMAIN ID
 >     ```bash
@@ -137,6 +144,13 @@ that it is acceptable that some robots don't own grippers or wheels and so forth
 >  4. 启动isaacsim
 >  5. 按步骤设置节点导入 然后import
 
+每一个部件导入并选择路径后，会保存为usd文件
+
+拼接整个机器人的时候，新建一个场景，直接把每一个部件的usd托进去，在父prim下并列
+
+选择robot assembler并开始assemble后，具体的transform数值要在rviz的TF里展开看。
+注意，这里的transform数值是世界坐标，而xacro里的origin xyz是相对于joint坐标系而言的，所以得再RVIZ里去看和修改。
+
 
 ## Blender Rendering
 - Export as .obj
@@ -145,10 +159,8 @@ that it is acceptable that some robots don't own grippers or wheels and so forth
 - Export as .glb
    > Note: /Transform/+Y up should be disabled
 
-## Robot Assembler Using
-> General Steps: 
-> 1. 启动RVIZ
-> 2. 在isaac中打开import from ROS2 urdf node 
+
+
 
 ## Action Graph
 Take ARX-X7S as an example:
