@@ -5,11 +5,14 @@ This file includes my personal attempts to make a robot description package base
 You can find relevant official tutorial in [isaac sim robot set-up tutorial](https://docs.isaacsim.omniverse.nvidia.com/6.0.0/robot_setup_tutorials/tutorial_import_assemble_manipulator.html).
 
 ## General Steps
-1. Use the xacro file to modularize components of the robot.
-2. Turn to the README file and test the visualization.
+It is possible to encounter quite a few errors during the steps below. Therefore, the following steps only
+serves as a structure to help developers clarify the sequence of making a robot description package. Detailed
+methods and possibl errors can be found in the modules after GENERAL STEPS.
+### 1. Use the xacro file to modularize components of the robot.
+### 2. Turn to the README file and test the visualization.
     >    Note: Errors may be encountered during this stage, mostly because of the conflict between **macro definition and 
    data transmission**. You can use LLM to help fix it.
-3. Write the files in /config:
+### 3. Write the files in /config:
    ```bash
    config
    ├── ocs2
@@ -18,36 +21,31 @@ You can find relevant official tutorial in [isaac sim robot set-up tutorial](htt
    └── ros2_control
        └── ros2_controllers.yaml
    ```
-   Play the ocs control demo to make sure it works.
+   Play the ocs2 control demo (mobile & arm)  to make sure it works.
 
-   Possible ERROR: 视野里只有一个baselink且是白模+末端执行器控制体。终端报错belike:
+   - **Possible ERROR**: 
+   There is only a base_link model(without renderings) in your scene and the end effector balls. The terminal provides details below:
     ```bash
     [ERROR] [mobile_manipulator_mpc_node-3]: process has died [pid 26023, exit code -6, cmd '/home/shimanliang/ros2_ws/install/ocs2_mobile_manipulator_ros/lib/ocs2_mobile_manipulator_ros/mobile_manipulator_mpc_node --ros-args -r __node:=mobile_manipulator_mpc --params-file /tmp/launch_params_9stbutru --params-file /tmp/launch_params_pee3x8ze --params-file /tmp/launch_params_79vuvgqn'].
     ```
-   Possible reason: task.info里各关节的顺序和robot.xacro里对应不上
-            > Note: 我遇到的原因：机械臂部分复用的是已有的机械臂包，但是机械臂的末端执行器名称没和robot.xacro里的引用对上（也就是命名不一样），改成一样的就解决了。
+   - **Possible REASON**: 
+   The order of joints in task.info doesn't match that in robot.xacro.
+   > The mistake I've made: The robotic arm section reuses an existing robotic arm package, but the end-effector names did not match the references in robot.xacro (i.e., they were named differently). Changing them to match resolved the issue.
 
-4. Import the robot into isaac sim, assign the nodes and try riviz control.
+### 4. Import the robot into isaac sim, assign the nodes and try riviz control.
 
 ## XACRO and URDF
-1. We usually use .xacro files to manage different parts of the robot, and use the following command to automatically generate a urdf file:
+### Generating a URDF file
+We usually use .xacro files to manage different parts of the robot, and use the following command to automatically generate a urdf file:
    ```bash
    source ~/ros2_ws/install/setup.bash
    xacro your_xacro_file_name.xacro -o your_urdf_file_name.urdf
    ```
-    >Note: 可能遇到的问题：file not found。有可能是修改了xacro文档内容，所以这个时候需要先重新编译。
+    - **Possible ERROR**：file not found
+    - **Possible REASON**:Maybe you have changed the context of the xacro file. So you'd better rebuild it first.
     
-    由于 wheel.xacro 里面定义的是一个 宏 (macro)，它不是一个完整的机器人描述文件，因此无法直接通过 xacro wheel.xacro 命令生成 URDF。
-
-    为了单独生成这三个轮子的 URDF 进行测试或验证，需要创建一个临时的“测试桩”文件（wrapper）来调用这个宏。
     
-    调用语句为：
-    ```bash
-    xacro test_wheel_gen.xacro wheel_name:=wheel_1 rpy:="0 0 0" robot_name:=wheel1 > wheel1.urdf
-    xacro test_wheel_gen.xacro wheel_name:=wheel_2 rpy:="0 0 0" robot_name:=wheel2 > wheel2.urdf
-    xacro test_wheel_gen.xacro wheel_name:=wheel_3 rpy:="0 0 3.1415926" robot_name:=wheel3 > wheel3.urdf #反转方向
-    ```
-2. The logic of an xacro file compilation:
+### The logic of an xacro file compilation
    ```bash
    xacro
    ├── components
@@ -64,86 +62,92 @@ xacro files in the component folder are cited and serially compiled.
 that it is acceptable that some robots don't own grippers or wheels and so forth.
 
 ## Robot Assembler Using
+### Version of isaac-sim
 - Use isaac sim 5.0 to assemble parts.
 - Use isaac sim 6.0 to run the control.
 ### Mind the DOMAIN ID
-事情发生的背景是，之前我一直在宿主机本地运行这些仿真都是正常的，但是我现在为了在isaacsim里使用robot assembler进行机器人部件的组装，所以我使用容器ubuntu22安装了isaacsim5.0进行操作（原本宿主机上我使用的是isaacsim6.0），然后今天安装5.0成功后，我使用import from ros2 urdf node导入了机器人的base部分进isaac，结果我想继续导入lift部分的时候，我发现所有RVIZ都失效了开始报错，直到我在同一个终端修改了我的DOMAINID之后才恢复正常。
+The background is that previously, all simulations ran normally locally on my host machine. However, to use the Robot Assembler in IsaacSim for robot component assembly, I installed IsaacSim 5.0 within a Ubuntu 22 container (originally I used IsaacSim 6.0 on the host). After successfully installing version 5.0 today, I imported the robot's base part into Isaac using the `import from ros2 urdf node` command. However, when I attempted to import the lift part next, all RVIZ instances failed and started reporting errors. Functionality only resumed after I modified my DOMAINID within the same terminal.
 
-根源在于：Isaac Sim 的 URDF 导入插件本质上是一个活跃的 ROS 2 节点，它与你的宿主机 Launch 脚本在同一个“频道”内发生了严重的资源抢占。
+The root cause lies in: Isaac Sim's URDF import plugin is essentially an active ROS 2 node. It competed for resources with your host machine's Launch script on the same channel, causing severe resource contention.
 
-以下是来自Gemini的分析：
+Here is Gemini's analysis:
 ```bash
-这是一个非常典型且深刻的 ROS 2 多机/多环境通信冲突案例。通过你的背景描述，我们可以复盘出这一切混乱背后的“罪魁祸首”。
+This is a classic and profound case of ROS 2 multi-robot/multi-environment communication conflict. Based on your background description, we can trace the root cause behind this chaos.
 
-根源在于：Isaac Sim 的 URDF 导入插件本质上是一个活跃的 ROS 2 节点，它与你的宿主机 Launch 脚本在同一个“频道”内发生了严重的资源抢占。
+The fundamental issue lies in: Isaac Sim's URDF import plugin is essentially an active ROS 2 node. It engaged in severe resource contention with your host machine's Launch script within the same “channel.”
 
-以下是详细的原因拆解，以及为什么你之前没遇到、这次却“翻车”了的逻辑：
-1. 根本原因：Isaac Sim 5.0 容器内的“隐形”发布者
+Below is a detailed breakdown of the causes and the logic explaining why you previously avoided this issue but encountered it now:
+1. Root Cause: The “Invisible” Publisher Within the Isaac Sim 5.0 Container
 
-当你使用 Isaac Sim 的 Import from ROS 2 URDF 节点时，Isaac Sim 并不是简单地读取一个文件，而是启动了一个内置的 ROS 2 节点（通常包含一个 Bridge）。
+When using Isaac Sim's Import from ROS 2 URDF node, Isaac Sim does not simply read a file. Instead, it launches a built-in ROS 2 node (typically containing a Bridge).
 
-    UR5 的来源：Isaac Sim 的很多内置示例和测试模板（尤其是旧版 5.0）默认以 Universal Robots (UR) 作为示例。当你启动导入节点但配置未完全覆盖时，Isaac Sim 内部可能激活了一个默认的 robot_state_publisher 或参数服务器，它持续向 /robot_description 话题发送 UR5 的数据。
+    UR5's Origin: Many built-in examples and test templates in Isaac Sim (especially older 5.0 versions) default to Universal Robots (UR) as the example robot. When you launch the import node with incomplete configuration overrides, Isaac Sim may activate a default robot_state_publisher or parameter server internally. This publisher continuously sends UR5 data to the /robot_description topic.
 
-    话题冲突（Topic Collision）：在 ROS 2 中，如果两个节点都在发布同一个话题（如 /robot_description），订阅者（如 RViz）会交替收到两个不同的数据包。这就是为什么你看到 RViz 里关节列表“闪现”正确后立刻变回 UR5 的原因。
+    Topic Collision: In ROS 2, if two nodes publish to the same topic (e.g., /robot_description), subscribers (like RViz) will alternately receive data from both. This explains why the joint list in RViz briefly displays the correct UR5 data before reverting to UR5's data.
 
-2. 为什么之前正常，这次不行？
+2. Why did it work before but not now?
 
-这里涉及三个变量的变化：
+This involves changes to three variables:
 
-    变量一：容器网络模式 你在启动 Ubuntu 22 容器时，极大概率使用了 --net=host 参数。这使得容器内的 ROS 2 发现机制（DDS）与宿主机完全打通。
+Variable 1: Container Network Mode
+When launching the Ubuntu 22 container, you most likely used the --net=host parameter. This fully exposes the ROS 2 discovery mechanism (DDS) within the container to the host machine.
 
-    变量二：Isaac Sim 5.0 的行为差异 Isaac Sim 6.0 和 5.0 的 ROS 2 Bridge 实现逻辑有所不同。5.0 版本的 Import from ROS 2 URDF 节点在等待连接时，更容易产生“挂起”的残留节点。
+    Variable 2: Isaac Sim 5.0 Behavior Differences Isaac Sim 6.0 and 5.0 implement the ROS 2 Bridge differently. The Import from ROS 2 URDF node in version 5.0 is more prone to leaving “hanging” residual nodes while waiting for connections.
 
-    变量三：节点“粘性” 当你导入了 Base 部分后，Isaac Sim 的那个导入节点可能并没有完全关闭或释放话题的所有权。当你准备导入 Lift 部分时，之前的导入进程还在后台源源不断地发布旧的（或默认的）URDF 数据。
+    Variable 3: Node “Stickiness” After importing the Base section, the Isaac Sim import node may not fully close or release topic ownership. When preparing to import the Lift section, the previous import process continues publishing old (or default) URDF data in the background.
 
-3. 中间哪一步没做好？
+3. What Step Was Missed?
 
-其实你并没有做错什么重大的事情，只是忽略了 ROS 2 默认是“全开放”通信 这一特性。
+You didn't make any major mistakes—you simply overlooked ROS 2's default “fully open” communication mode.
 
-“翻车”的关键点在于： 你在同一个局域网（容器与宿主机共享网络）和同一个 DOMAIN_ID 下，运行了两个都试图定义“机器人是谁”的系统。
+The critical failure point lies in running two systems simultaneously on the same LAN (container and host share the network) and under the same DOMAIN_ID, both attempting to define “who the robot is.”
 
-    宿主机的 manipulator.launch.py 说：“我是 ARX 机器人。”
+    The host machine's manipulator.launch.py declares: “I am the ARX robot.”
 
-    Isaac Sim 的导入插件（可能带有残留或默认值）说：“我是 UR5 机器人。”
+    The Isaac Sim import plugin (possibly with residual or default values) declares: “I am the UR5 robot.”
 
-    RViz 作为一个“听众”，由于 ROS 2 没有像 ROS 1 那样的 Master 管理机制，它会尝试接收双方的信息，导致混乱。
+    RViz, acting as a “listener,” attempts to receive messages from both parties. Since ROS 2 lacks ROS 1's Master management mechanism, this leads to confusion.
 
-4. 为什么修改 DOMAIN_ID 就好了？
+4. Why does modifying DOMAIN_ID resolve the issue?
 
-修改 DOMAIN_ID 相当于给你的终端加了一层物理隔离屏障：
+Modifying DOMAIN_ID effectively adds a layer of physical isolation to your terminal:
 
-    你的宿主机终端（DOMAIN_ID 88）现在只能听到自己发出的 ARX 信号。
+    Your host machine terminal (DOMAIN_ID 88) can now only receive ARX signals it sends itself.
 
-    容器里的 Isaac Sim（DOMAIN_ID 0）发出的 UR5 信号被挡在了屏障之外。
+    UR5 signals emitted by Isaac Sim inside the container (DOMAIN_ID 0) are blocked by this barrier.
 
-    结果：RViz 只接收 DOMAIN 88 的数据，自然就清净了。
+    Result: RViz only receives data from DOMAIN 88, naturally eliminating interference.
 
-5. 深度复盘：未来如何避免？
+5. Deep Dive: How to Prevent This in the Future?
 
-在使用 Isaac Sim 与 ROS 2 协同工作时，建议遵循以下流程：
+When integrating Isaac Sim with ROS 2, follow this recommended workflow:
 
-    明确隔离环境：如果你只是想从 ROS 2 导入 URDF，最好在启动 Isaac Sim 容器时，就给它分配一个特定的 ROS_DOMAIN_ID，或者在容器启动命令中加入 export ROS_LOCALHOST_ONLY=1。
+    Define Isolation Environments: If you only need to import URDF from ROS 2, assign Isaac Sim a dedicated ROS_DOMAIN_ID when launching its container, or include `export ROS_LOCALHOST_ONLY=1` in the container startup command.
 
-    清理残留话题：每次导入失败或更换部件后，最好在宿主机查一下 ros2 topic echo /robot_description，看输出的是不是你想要的东西。
+    Clean residual topics: After each import failure or component change, check the host machine with `ros2 topic echo /robot_description` to verify the output matches your expectations.
 
-    注意多重节点名：你之前看到的多个 /dwj_Robot_node 说明 Isaac Sim 或其底层驱动在尝试重连时产生了多个僵尸节点，这些节点会不停地重置参数服务器。
+    Beware of duplicate node names: The multiple `/dwj_Robot_node` instances you observed indicate Isaac Sim or its underlying drivers generated zombie nodes during reconnection attempts. These nodes continuously reset the parameter server.
 
-总结： 这不是你的技术失误，而是 ROS 2 自动发现机制（DDS）在复杂开发环境下的典型副作用。你现在的解决方法（修改 DOMAIN_ID）正是处理这种冲突的最标准、最有效的专业手段。
+Summary: This is not a technical error on your part, but a typical side effect of ROS 2's automatic discovery mechanism (DDS) in complex development environments. Your current solution (modifying DOMAIN_ID) is precisely the most standard and effective professional approach to resolving such conflicts.
 ```
-所以一定要手动设置DOMAIN ID！！！
+As a result, make sure to occupy a domain id without conflicting with others under the same wifi.
 
-后面遇到很多机器人在RVIZ里抽搐或闪退的问题大抵都和DOMAIN ID冲突有关
+> Note: Most issues encountered later with robots twitching or crashing in RVIZ are generally related to DOMAIN ID conflicts.
 
->Note： 所以，import from ros2 urdf node的时候，应该严格按照以下步骤：
->  1. 在即将开启可视化节点的窗口设置自己的DOMAIN ID
->     ```bash
->     export ROS_DOMAIN_ID=180 #随便设的，防止和别人撞
->     ```
->  2. 在同一个终端（重要非常重要）启动可视化节点
->  3. 在即将开启isaacsim的终端设置同样的DOMAIN ID
->  4. 启动isaacsim
->  5. 按步骤设置节点导入 然后import
+#### Ways to set a domain id
+- You can set the domain id each time when opening a new terminal：
+>  1. Set your own DOMAIN ID in the window where you're about to launch the visualization node
+     ```bash
+     export ROS_DOMAIN_ID=180 # Set arbitrarily to avoid conflicts
+     ```
+>  2. Launch the visualization node in the same terminal (CRITICAL)
+>  3. Set the same DOMAIN ID in the terminal where you'll run IsaacSim
+>  4. Start IsaacSim
+>  5. Follow the steps to configure node import, then execute `import`
 
+- Or you can set it permanently in .bashrc
+
+### After importing modules
 每一个部件导入并选择路径后，会保存为usd文件
 
 拼接整个机器人的时候，新建一个场景，直接把每一个部件的usd托进去，在父prim下并列

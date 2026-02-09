@@ -2,11 +2,32 @@
 
 For a github new hand, the followings are commands I believe necessary for quick enters.
 
+## Creating a new blah
+### Creating a new repository
+
+### Creating a new branch
+```bash
+git checkout -b your_branch_name
+git add <your_file_name> # Or you may choose to use "git add ." to add all the files.
+```
+
 ## Uploading files
+### To main branch:
 ```bash
 git add .
-git commit -m "具体内容"
+git commit -m "details_of_your_commit"
 git push origin main
+```
+### To your own branch:
+```bash
+# The following two commands are not necessary, only to make sure about the branch.
+git checkout your_branch_name # Before doing this, switch to your established branch.
+git status # Make sure you are on the branch.
+
+# The following commands are necessary.
+git add <your_file_name>
+git commit -m "details_of_your_commit"
+git push -u origin your_branch_name
 ```
 
 ## Repository setting fatal
