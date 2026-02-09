@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="Body">
+
+        <xacro:property name="PI" value="3.1415926535897931"/>
+        <link name="lift_link">
+            <inertial>
+                <origin xyz="-0.053315 -0.00061422 -0.0086454"/>
+                <mass value="14.181"/>
+                <inertia ixx="0.32744849" ixy="-0.00306617" ixz="0.05920163" iyy="0.36541112" iyz="0.00117932" izz="0.49616592"/>
+            </inertial>
+            <visual>
+                <geometry><mesh filename="file://$(find arx_lift2s_description)/meshes/body4_1.glb"/></geometry>
+            </visual>
+            <collision>
+                <geometry><mesh filename="file://$(find arx_lift2s_description)/meshes/body4_1.glb"/></geometry>
+            </collision>
+        </link>
+
+        <joint name="lift_joint" type="prismatic">
+            <origin xyz="0.040103 0.0007607 0.221608"/>
+            <parent link="base_link"/>
+            <child link="lift_link"/>
+            <axis xyz="0 0 1"/>
+            <limit lower="0" upper="0.46" effort="400" velocity="0.15"/>
+        </joint>
+
+        <link name="body_link">
+            <inertial>
+                <origin xyz="0 0 0"/>
+                <mass value="1.0"/>
+                <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+            </inertial>
+            <visual>
+                <geometry><mesh filename="file://$(find arx_lift2s_description)/meshes/body4_2.glb"/></geometry>
+            </visual>
+            <collision>
+                <geometry><mesh filename="file://$(find arx_lift2s_description)/meshes/body4_2.glb"/></geometry>
+            </collision>
+        </link>
+
+        <joint name="body_joint" type="fixed">
+            <origin xyz="0.138047 0.001801 0.114163" rpy="0 0 0"/>
+            <parent link="lift_link"/>
+            <child link="body_link"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+    </xacro:macro>
+</robot>

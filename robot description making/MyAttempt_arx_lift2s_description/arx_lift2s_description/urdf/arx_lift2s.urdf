@@ -129,16 +129,19 @@
     <origin rpy="0.0 0.0 1.0472" xyz="0.15361 0.29246 -0.093"/>
     <parent link="base_link"/>
     <child link="wheel_1"/>
+    <axis xyz="1 0 0"/>
   </joint>
   <joint name="wheel2_joint" type="continuous">
     <origin rpy="0.0 0.0 -1.0472" xyz="0.15361 -0.29245 -0.093"/>
     <parent link="base_link"/>
     <child link="wheel_2"/>
+    <axis xyz="1 0 0"/>
   </joint>
   <joint name="wheel3_joint" type="continuous">
     <origin rpy="0.0 0.0 0" xyz="-0.35293 0 -0.093"/>
     <parent link="base_link"/>
     <child link="wheel_3"/>
+    <axis xyz="-1 0 0"/>
   </joint>
   <link name="left_base_link">
     <inertial>
