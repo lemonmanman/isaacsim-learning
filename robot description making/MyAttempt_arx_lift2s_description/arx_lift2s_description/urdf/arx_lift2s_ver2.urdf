@@ -21,7 +21,7 @@
       </geometry>
     </collision>
   </link>
-  <link name="lift_link">
+  <link name="body_link">
     <inertial>
       <origin xyz="-0.053315 -0.00061422 -0.0086454"/>
       <mass value="14.181"/>
@@ -29,44 +29,21 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/body4_1.glb"/>
+        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/body4.glb"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/body4_1.glb"/>
+        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/body4.glb"/>
       </geometry>
     </collision>
   </link>
-  <joint name="lift_joint" type="prismatic">
-    <origin xyz="0.040103 0.0007607 0.221608"/>
+  <joint name="body_joint" type="prismatic">
+    <origin xyz="0.094118 0.0010067 0.27"/>
     <parent link="base_link"/>
-    <child link="lift_link"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="400" lower="0" upper="0.46" velocity="0.15"/>
-  </joint>
-  <link name="body_link">
-    <inertial>
-      <origin xyz="0 0 0"/>
-      <mass value="1.0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/body4_2.glb"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/body4_2.glb"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="body_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.138047 0.001801 0.114163"/>
-    <parent link="lift_link"/>
     <child link="body_link"/>
     <axis xyz="0 0 1"/>
+    <limit effort="400" lower="0" upper="0.46" velocity="0.15"/>
   </joint>
   <link name="wheel_1">
     <inertial>
@@ -77,13 +54,13 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/wheel.glb"/>
+        <mesh filename="package://arx_lift2s_description/meshes/wheel.glb"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/wheel.glb"/>
+        <mesh filename="package://arx_lift2s_description/meshes/wheel.glb"/>
       </geometry>
     </collision>
   </link>
@@ -96,13 +73,13 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/wheel.glb"/>
+        <mesh filename="package://arx_lift2s_description/meshes/wheel.glb"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/wheel.glb"/>
+        <mesh filename="package://arx_lift2s_description/meshes/wheel.glb"/>
       </geometry>
     </collision>
   </link>
@@ -115,27 +92,27 @@
     <visual>
       <origin rpy="0 0 3.141592653589793" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/wheel.glb"/>
+        <mesh filename="package://arx_lift2s_description/meshes/wheel.glb"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.141592653589793" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/shimanliang/ros2_ws/install/arx_lift2s_description/share/arx_lift2s_description/meshes/wheel.glb"/>
+        <mesh filename="package://arx_lift2s_description/meshes/wheel.glb"/>
       </geometry>
     </collision>
   </link>
-  <joint name="wheel1_joint" type="continuous">
+  <joint name="wheel1_joint" type="fixed">
     <origin rpy="0.0 0.0 1.0472" xyz="0.15361 0.29246 -0.093"/>
     <parent link="base_link"/>
     <child link="wheel_1"/>
   </joint>
-  <joint name="wheel2_joint" type="continuous">
+  <joint name="wheel2_joint" type="fixed">
     <origin rpy="0.0 0.0 -1.0472" xyz="0.15361 -0.29245 -0.093"/>
     <parent link="base_link"/>
     <child link="wheel_2"/>
   </joint>
-  <joint name="wheel3_joint" type="continuous">
+  <joint name="wheel3_joint" type="fixed">
     <origin rpy="0.0 0.0 0" xyz="-0.35293 0 -0.093"/>
     <parent link="base_link"/>
     <child link="wheel_3"/>
@@ -647,13 +624,13 @@
     <child link="right_camera"/>
   </joint>
   <joint name="arm_left_fixed" type="fixed">
-    <parent link="lift_link"/>
+    <parent link="body_link"/>
     <child link="left_base_link"/>
-    <origin rpy="0 0 0" xyz="0.113964 0.253848 0.012392"/>
+    <origin rpy="0 0 0" xyz="0.059949 0.25 -0.036"/>
   </joint>
   <joint name="arm_right_fixed" type="fixed">
-    <parent link="lift_link"/>
+    <parent link="body_link"/>
     <child link="right_base_link"/>
-    <origin rpy="0 0 0" xyz="0.113964 -0.246152 0.012392"/>
+    <origin rpy="0 0 0" xyz="0.059949 -0.25 -0.036"/>
   </joint>
 </robot>

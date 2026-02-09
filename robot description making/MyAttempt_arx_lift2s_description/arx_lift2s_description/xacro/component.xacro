@@ -14,6 +14,7 @@
 
     </xacro:if>
 
+
     <xacro:if value="${'$(arg type)' == 'wheel'}">
         <!-- Include Wheel -->
         <xacro:include filename="$(find arx_lift2s_description)/xacro/components/wheel.xacro"/>

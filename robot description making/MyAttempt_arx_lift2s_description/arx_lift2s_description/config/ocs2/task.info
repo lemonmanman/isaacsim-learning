@@ -7,7 +7,7 @@ model_information {
       [0]  "wheel1_joint"
       [1]  "wheel2_joint"
       [2]  "wheel3_joint"
-      [3]  "left_joint7"  ; 夹爪由独立控制器控制，OCS2 需移除
+      [3]  "left_joint7"
       [4]  "left_joint8"
       [5]  "right_joint7"
       [6]  "right_joint8"

@@ -28,13 +28,12 @@ colcon build --packages-up-to arx_lift2s_description --symlink-install
 
 ## 2.2 Components
 
-* Base
+1. Base
   ```bash
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch component.launch.py robot:=arx_lift2s
   ```
-
-* Wheel
+2. Wheel
   ```bash
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch component.launch.py robot:=arx_lift2s type:=wheel
