@@ -64,6 +64,7 @@ that it is acceptable that some robots don't own grippers or wheels and so forth
 ## Robot Assembler Using
 ### Version of isaac-sim
 - Use isaac sim 5.0 to assemble parts.
+  > Note: As 6.0 is already downloaded in the original environment, isaacsim 5.0 ought to be downloaded using a distrobox.
 - Use isaac sim 6.0 to run the control.
 ### Mind the DOMAIN ID
 The background is that previously, all simulations ran normally locally on my host machine. However, to use the Robot Assembler in IsaacSim for robot component assembly, I installed IsaacSim 5.0 within a Ubuntu 22 container (originally I used IsaacSim 6.0 on the host). After successfully installing version 5.0 today, I imported the robot's base part into Isaac using the `import from ros2 urdf node` command. However, when I attempted to import the lift part next, all RVIZ instances failed and started reporting errors. Functionality only resumed after I modified my DOMAINID within the same terminal.
@@ -184,44 +185,9 @@ Graphs:
 [Error] [omni.physx.tensors.plugin] Pattern '/World/your_robot_name' did not match any rigid bodies
 [Error] [omni.physx.tensors.plugin] Provided pattern list did not match any articulations
 ```
-> REASON: There is a lack of **articulation root** in the robot root prim, which results from the USD file itself (instead of anything that can be monitored through the property panel in isaac sim).
+> Possible REASON: There is a lack of **articulation root** in the robot root prim, which results from the USD file itself (instead of anything that can be monitored through the property panel in isaac sim).
 
-However, the following script can be used to add a **physics** property to the robot prim:
-```bash
-from pxr import UsdPhysics, Usd
-import omni.usd
-
-# 获取当前场景
-stage = omni.usd.get_context().get_stage()
-# 你的机器人根Prim路径
-robot_root_path = "/World/lift_2s/lift2"
-robot_prim = stage.GetPrimAtPath(robot_root_path)
-
-if robot_prim:
-    # 1. 为顶层Prim添加ArticulationRootAPI（关键！）
-    if not robot_prim.HasAPI(UsdPhysics.ArticulationRootAPI):
-        UsdPhysics.ArticulationRootAPI.Apply(robot_prim)
-        print(f"✓ 已为 {robot_root_path} 添加 ArticulationRootAPI")
-    
-    # 2. 遍历机器人，为所有几何体（Mesh）添加刚体和碰撞属性
-    from pxr import UsdGeom
-    rigid_count = 0
-    for prim in Usd.PrimRange(robot_prim):
-        if prim.IsA(UsdGeom.Mesh):
-            # 添加RigidBodyAPI
-            if not prim.HasAPI(UsdPhysics.RigidBodyAPI):
-                UsdPhysics.RigidBodyAPI.Apply(prim)
-            # 添加CollisionAPI
-            if not prim.HasAPI(UsdPhysics.CollisionAPI):
-                UsdPhysics.CollisionAPI.Apply(prim)
-            rigid_count += 1
-    
-    print(f"✓ 已为 {rigid_count} 个Mesh部件添加刚体与碰撞属性")
-    print("修复完成。请保存场景并重新测试Action Graph。")
-else:
-    print(f"✗ 错误：未找到路径 {robot_root_path}")
-```
-
+> Possible SOLUTION: Try add an articulation root to the root of the robot (mostly named after the robot's name).
 
 Sometimes you may encounter with the error situation below:
 ```bash
@@ -246,26 +212,47 @@ def find_nested_articulation_roots(prim):
     return root_list
 
 if robot_prim:
-    print("=== 正在扫描机器人中所有的 ArticulationRoot ===")
+    print("=== Scanning all the robots for ArticulationRoot ===")
     all_roots = find_nested_articulation_roots(robot_prim)
     
     if not all_roots:
-        print("未发现任何 ArticulationRoot。")
+        print("Not finding any ArticulationRoot。")
     else:
-        print(f"共发现 {len(all_roots)} 个 ArticulationRoot:")
+        print(f"Have found {len(all_roots)}  ArticulationRoots:")
         for path in all_roots:
-            # 判断是否为顶层
+            # If root prim:
             if path == robot_prim.GetPath():
-                print(f"  [顶层] {path}")
+                print(f"  [root] {path}")
             else:
-                print(f"  [嵌套错误！] {path} <- 这个必须被移除！")
+                print(f"  [false！] {path} <- this has to be removed！")
 else:
     print("找不到机器人。")
 ```
 
-### error: isaacsim里机器人抽搐
-前提：点击仿真后，终端无报错
+### error: the robot twitching in isaacsim
+Prerequisite: After clicking simulate, no errors appear in the terminal.
 
-抽搐原因：机器人内部碰撞
+Cause of jerkiness: Internal collisions within the robot.
 
-解决方法：找到articulation root，取消勾选self collisions enabled
+**Possible SOLUTION**: Locate the articulation root and uncheck “Self collisions enabled.”
+
+### error: TF_OLD_DATA
+This happens when I was trying to use the command below to start a simulation:
+```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch ocs2_arm_controller demo.launch.py robot:=arx_lift2s hardware:=isaac
+  ```
+It turns out that the robot doesn't move at all and the terminal continuously giving out warnings
+marking the error of TF_OLD_DATA.
+
+**Possible REASON**: ROS 2 namespace conflict issue
+
+    Before modification, both Isaac Sim publishing JointState and ROS 2 receiving commands likely occurred under the root namespace (/), causing the following conflicts:
+        
+    - Topic Authority Conflict: Your ros2_control plugin (TopicBasedSystem) subscribed to /joint_states while simultaneously attempting to publish to the same topic or one with a similar path.
+        
+    - TF Broadcasters “Fighting”: When Isaac Sim's namespace is empty, it publishes directly to the global /joint_states and /tf. Your ROS-side robot_state_publisher also processes this data.
+         
+    - Feedback Loop Oscillation: Due to identical namespaces, ROS 2 nodes may mistakenly interpret Isaac's “state data” as their own “control feedback.” This explains why Rviz previously showed no response—the controller either believed the current position had reached the target or was “overridden” by conflicting data from the same namespace.
+
+**Possible SOLUTION**: Change the namespace of ros2 publish joint state node to isaac (the default is none)
