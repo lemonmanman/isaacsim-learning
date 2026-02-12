@@ -203,8 +203,23 @@ other things are settled (which means that this process is not necessary, but se
       - Xacro files support more than one collion parts. You can assign them with different names.
       - In most cases, you have to alter the accurate figures using your eyes.
 
+### Self collisions
+We set the self collisions in .info files to make sure links don't conflict with others.
 
-## Action Graph
+There are two main figures used here:
+- activationDistance: the maximum distance when the pairs are constrained by force (because of the close distance)
+- minimumDistance: the minimum distance allowed between the pairs
+
+To better understand the figures, we take d as the distance between the pairs.
+- If d > activationDistance: smooth likes nothing happens
+- If minimumDistance < d < activationDistance: resistance appears, and the closer the pairs are, the stronger the resistance is
+- If d < minimumDistance: technically unreachable
+
+Remember to regenerate the .urdf file, or the routine will overrun.
+
+
+## Isaac-sim Processing
+### Action Graph
 Take ARX-X7S as an example:
 
 Structure:
