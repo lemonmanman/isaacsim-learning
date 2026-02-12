@@ -215,7 +215,10 @@ To better understand the figures, we take d as the distance between the pairs.
 - If minimumDistance < d < activationDistance: resistance appears, and the closer the pairs are, the stronger the resistance is
 - If d < minimumDistance: technically unreachable
 
-Remember to regenerate the .urdf file, or the routine will overrun.
+Remember to **regenerate the .urdf file**, or the routine will overrun. Or you may encounter errors below:
+```bash
+[ros2_control_node-3] [WARN] [1770879744.372515797] [controller_manager]: Overrun might occur, Total time : 25134.515 us (Expected < 10000.000 us) --> Read time : 182.028 us, Update time : 24939.060 us, Write time : 13.427 us
+```
 
 
 ## Isaac-sim Processing
