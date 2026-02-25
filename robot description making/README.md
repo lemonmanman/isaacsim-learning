@@ -228,7 +228,7 @@ Take ARX-X7S as an example:
 Structure:
 
 Graphs:
-- Ros_jointStates
+- ROS_JointStates
 ![joint graph](../.images/graph1.png)
 - holonomic controller
 ![graph2](../.images/graph2.png)
