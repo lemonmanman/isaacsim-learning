@@ -233,6 +233,10 @@ Graphs:
 - holonomic controller
 ![graph2](../.images/graph2.png)
 ![graph3](../.images/graph3.png)
+- Adding cameras
+![graph4](../.images/camera_graph.png)
+- Service prim
+![graph5](../.images/service_prim.png)
 
 ## Errors
 ### error: no match articulations

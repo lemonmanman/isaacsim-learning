@@ -44,6 +44,10 @@ ros2 run rmw_zenoh_cpp rmw_zenohd
 cd ~/isaacsim/_build/linux-x86_64/release
 ./isaac-sim.sh
 ```
+Enabling simulation extensions:
+```bash
+./isaac-sim.sh --/isaac/startup/ros_sim_control_extension=True
+```
 ### isaac-sim 5.0
 Enter your distrobox first. For my situation:
 ```bash
