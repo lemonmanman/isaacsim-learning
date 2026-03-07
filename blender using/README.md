@@ -1,8 +1,12 @@
 # Blender Using
 This file includes blender using tips.
 
-## blender startup
-Use the commands below in terminal to for a quick blender startup:
+## blender install and startup
+Use the commands below in terminal to for a quick blender installation:
 ```bash
-/opt/blender/blender
+sudo snap install blender --classic
+```
+Startup:
+```bash
+blender
 ```
