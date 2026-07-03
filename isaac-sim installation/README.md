@@ -15,10 +15,7 @@ First, create the distrobox:
 mkdir -p ~/distrobox/ubuntu22
 
 # use "--nvidia" to create
-distrobox create --name ubuntu22 \
-  --image ubuntu:22.04 \
-  --home ~/distrobox/ubuntu22 \
-  --nvidia
+distrobox create --name ubuntu22 --image ubuntu:22.04 --home ~/distrobox/ubuntu22 --nvidia
 ```
 
 After creating the distrobox, you need to install packages below:
